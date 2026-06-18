@@ -391,24 +391,22 @@ Instant маркировать как `PROTOTYPE / STYLE EXPLORATION`, а не p
 
 ## 12. Reference files — куда смотреть дальше
 
-Тело скилла выше — это полный операционный контракт. За деталями обращаться к файлам:
+Тело скилла выше — полный операционный контракт (self-sufficient). Reference files = дополнительные данные по требованию:
 
-- **`reference/manual.md`** — полный мануал: философия, разбор ТЗ (таблица), классификация
-  сложности кадров (4 уровня), полный каталог моделей + матрица выбора + «7 вопросов» +
-  decision tree, полный список Stage Gates, Upload Map, Complex Action, Modular generation,
-  QC-чек-листы, план итераций, Production Log / Post-mortem, глоссарий. Читать, когда нужна
-  конкретика по выбору модели, гейтам или разбору ТЗ.
-- **`reference/templates.md`** — все промпт-шаблоны для копирования: борды (Style/Object/
-  Character/Location/Prop/Pose/Shot), Keyframe, Universal Video, Cheap Motion Test, Premium
-  Video, Timecoded (Seedance / 10-сек реклама / multi-clip), JSON Keyframe Pack, Audio Map,
-  Asset Manifest, Production Log, control prompts. Читать, когда пора писать конкретный промпт.
-- **`reference/lessons-and-example.md`** — «почему» пайплайна: карта «реальный провал на тесте
-  → правило-противоядие» (быстрый self-check перед отправкой ответа) и один эталонный первый
-  ответ целиком. Читать, когда нужно понять цену нарушения правила или свериться с образцом тона.
-- **`reference/higgsfield.md`** — **опционально**, только если работаем в Higgsfield: router
-  по workflow, default-модели, media roles, Marketing Studio Video (modes/hooks), Ad
-  References, Brand Kits, Products, DTC Ads Engine, Product Photoshoot, Marketplace Cards,
-  Soul Character / Identity, Virality Predictor. Если платформа не Higgsfield — этот файл не нужен.
+- **`reference/lookup.md`** — таблицы поиска: каталог моделей (видео + image), матрица выбора,
+  «7 вопросов», decision tree, классификация сложности (4 уровня), полный список Stage Gates,
+  Upload Map, QC-чеклист, типовые ошибки → фиксы, разбор ТЗ-таблица, форматы платформ,
+  глоссарий. Открывать, когда нужна конкретная таблица.
+- **`reference/templates.md`** — промпт-шаблоны: борды (Style/Object/Chroma Key/Character/
+  Location/Prop/Pose/Shot), Keyframe, Universal Video, Motion Test, Premium Video, Timecoded
+  (Seedance / 10-сек реклама / multi-clip / multi-char), JSON Keyframe Pack, Audio Map, Asset
+  Manifest, Production Log, NANO / Safe Mode / Two-Step / One-Screen control prompts,
+  Multi-Char Reference Map Convention. Открывать, когда нужен конкретный промпт.
+- **`reference/lessons.md`** — «почему» пайплайна: карта «реальный провал → правило» (self-check)
+  + эталонный первый ответ. Открывать перед отправкой ответа или чтобы понять цену нарушения.
+- **`reference/higgsfield.md`** — **только если работаем в Higgsfield**: router по workflow,
+  default-модели, Marketing Studio Video, DTC Ads Engine, Product Photoshoot, Soul Character /
+  Identity, Virality Predictor. Если платформа не Higgsfield — файл не нужен.
 
 ---
 
