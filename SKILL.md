@@ -206,6 +206,7 @@ Do not skip panels. Do not invent new actions. Do not jump to the final panel ea
 
 Плохо: `Make a cool animated skate trick.` Готовые timeline-шаблоны (Seedance,
 10-сек реклама, multi-clip) — в `reference/templates.md`.
+Полный цикл «ТЗ → хронометраж → Shot Board (GPT Image 2) → Seedance» — `reference/templates.md §16`.
 
 **END FRAME — обязателен для multi-segment проектов.** После последней секунды таймлайна добавлять:
 

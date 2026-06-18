@@ -20,6 +20,7 @@
 13. Post-mortem
 14. Control prompts (NANO / Safe Mode / Two-Step / One-Screen)
 15. Multi-Character Reference Map Convention
+16. ТЗ → Production Pack (полный рабочий цикл: хронометраж → Shot Board → Seedance)
 
 ---
 
@@ -514,4 +515,178 @@ Reference map:
 @image 3 = Office Location Board
 @image 4 = Laptop Object Board (Chroma Key variant — screen = #00FF00)
 @image 5 = Segment 3 Shot Board
+```
+
+---
+
+## 16. ТЗ → Production Pack (полный рабочий цикл)
+
+Когда есть скрипт/ТЗ с персонажами и диалогом — вот полная цепочка:
+
+```
+ТЗ → хронометраж → N сегментов по ≤15c
+→ для каждого сегмента:
+   [A] Shot Board промпт (GPT Image 2, timecoded panels)
+   [B] Seedance промпт (ссылается на панели Shot Board)
+@image 1 = Char 1,  @image 2 = Char 2,  @image 3 = Shot Board сегмента
+```
+
+---
+
+### Шаг 1 — Разбор ТЗ: хронометраж и сегменты
+
+```text
+ХРОНОМЕТРАЖ И СЕГМЕНТЫ
+
+Общее время ролика: ~[N] секунд
+Сегментов Seedance (≤15c): [N]
+
+| Сег | Хрон | Действие | Диалог/звук | Ключевой момент |
+|-----|------|----------|-------------|-----------------|
+| S1  | 0–15c | [что происходит] | [кто говорит] | [пик сцены] |
+| S2  | 15–30c | ... | ... | ... |
+| S3  | 30–45c | ... | ... | ... |
+
+Reference Map проекта (фиксирован на весь проект):
+@image 1 = Character Board — [ИМЯ 1]
+@image 2 = Character Board — [ИМЯ 2]
+@image 3 = Shot Board текущего сегмента (меняется)
+
+Deliverables:
+- [N] Shot Board промптов (по одному на сегмент)
+- [N] Seedance промптов (по одному на сегмент)
+Итого: [N×2] промптов
+```
+
+---
+
+### Шаг 2 — Shot Board промпт (адаптированный под сегмент)
+
+Берём базовую структуру из docx, заменяем generic 12-shot labels на **timecoded panels под конкретную сцену**. Количество панелей = хронометраж / 2.5c (максимум 6 для Seedance-сегмента).
+
+```text
+@image 1 = Character Board — [ИМЯ 1]
+@image 2 = Character Board — [ИМЯ 2]
+
+Create a single high-resolution, densely packed storyboard reference sheet
+titled "SHOT BOARD — SEGMENT [N] | [START]–[END]s".
+
+Use @image 1 and @image 2 as the single source of truth for character
+faces, proportions, outfits, and identity. Characters must be identical
+across every panel.
+
+All on-image labels in ENGLISH. Editorial storyboard layout: dark near-black
+background, thin yellow neon accent light, faint film-grain overlay,
+production-grade storyboard UI.
+
+Metadata block: SEGMENT · [N] of [TOTAL] | SCENE · [описание сцены] |
+CHARACTERS · [имена] | SETTING · [локация] | RUNTIME · [хрон] |
+EMOTIONAL ARC · [дуга] | CAMERA STYLE · [стиль] | KEY ACTION · [ключевое действие]
+
+PANEL 01 | [0.0–2.5s] | [SHOT TYPE]
+Action: [точное физическое действие]
+Camera: [тип, движение]
+Locked: [что не меняется]
+[VFX NOTE: ELEMENT — TO BE COMPOSITED] (если есть экран)
+
+PANEL 02 | [2.5–5.0s] | [SHOT TYPE]
+Action: [...]
+Camera: [...]
+Locked: [...]
+
+PANEL 03 | [5.0–7.5s] | [SHOT TYPE]
+...
+
+PANEL 04 | [7.5–10.0s] | [SHOT TYPE]
+...
+
+PANEL 05 | [10.0–12.5s] | [SHOT TYPE]
+...
+
+PANEL 06 | [12.5–15.0s] | [SHOT TYPE — финальный]
+Action: [финальное состояние]
+Camera: stable hold
+END FRAME NOTE: [поза, выражение, камера — станет start_image следующего сегмента]
+
+PANEL 07 — CAMERA NOTES: lens choices, motion, framing for this segment.
+PANEL 08 — COVERAGE TYPES used: Wide / Medium / CU / Insert / OTS.
+PANEL 09 — COLOR PALETTE: 6 HEX swatches from this segment's dominant tones.
+
+Bottom: "Segment [N] of [TOTAL]. Use with @image 1 + @image 2 for Seedance generation."
+Style: Cinematic · Realistic. Photorealistic. 8K, fine grain, cinematic color grading.
+```
+
+---
+
+### Шаг 3 — Seedance промпт для этого сегмента
+
+```text
+Media roles:
+start_image = [END FRAME предыдущего сегмента / утверждённый start keyframe]
+image = Character Boards + Shot Board этого сегмента
+
+Reference map (фиксированный):
+@image 1 = Character Board — [ИМЯ 1, краткое описание: возраст, одежда]
+@image 2 = Character Board — [ИМЯ 2, краткое описание: возраст, одежда]
+@image 3 = Shot Board Segment [N] (сгенерированный на шаге 2)
+
+Create a 15-second [aspect ratio] video — SEGMENT [N] of [TOTAL].
+Follow @image 3 (Shot Board) as the main shot logic.
+@image 1 = [ИМЯ 1] — identity locked throughout.
+@image 2 = [ИМЯ 2] — identity locked throughout.
+Do not mix characters. Do not invent actions not shown in the Shot Board.
+
+Timeline:
+0.0–2.5s: Shot Board panel 1. [действие @image1/@image2]. Camera: [...]. Locked: [identity, outfit, location].
+2.5–5.0s: Shot Board panel 2. [действие]. Camera: [...].
+5.0–7.5s: Shot Board panel 3. [действие].
+7.5–10.0s: Shot Board panel 4. [действие].
+10.0–12.5s: Shot Board panel 5. [действие].
+12.5–15.0s: Shot Board panel 6. Hold. [финальное состояние].
+
+[Если есть Chroma Key экран:]
+[Device screen shows solid #00FF00 chroma key placeholder — UI composited in post]
+
+END FRAME: [точная поза @image1 и @image2, положение камеры, фон — не mid-action, camera stable, no motion blur].
+Используется как start_image Segment [N+1].
+
+Post-production: Readable text, subtitles, logos, UI, CTA, push-notifications — added after.
+Negative rules: No identity swap. No character mixing. No random text. No generated logos.
+No morphing. No reverse motion. No broken hands. No face melting. No extra limbs.
+```
+
+---
+
+### Итоговая структура для ролика из N сегментов
+
+```text
+Сегмент 1:
+  → Промпт A: Shot Board Seg 1 (@image 1 + @image 2)
+  → Промпт B: Seedance Seg 1 (@image 1 + @image 2 + @image 3=ShotBoard1)
+
+Сегмент 2:
+  → Промпт C: Shot Board Seg 2 (@image 1 + @image 2)
+  → Промпт D: Seedance Seg 2 (@image 1 + @image 2 + @image 3=ShotBoard2)
+
+[...]
+
+Итого: N сегментов × 2 промпта = N×2 промптов
+@image 3 всегда меняется (Shot Board сегмента), @image 1 и @image 2 — никогда.
+```
+
+---
+
+### Правило адаптации Shot Board
+
+Shot Board — не копируется из шаблона, а **строится под задачу**:
+
+```text
+Что берём из шаблона: структуру (panels, metadata block, camera notes, coverage types, HEX palette)
+Что адаптируем под ТЗ:
+  - Количество панелей → из хронометража (≤6 панелей на 15c)
+  - Действия в каждой панели → из скрипта/сцены
+  - Shot types → из режиссёрского замысла (не generic, а нужные для этой сцены)
+  - Metadata block → конкретные персонажи, локация, эмоциональная дуга этого сегмента
+  - VFX NOTE → только если в этом сегменте есть экран
+  - END FRAME → всегда (для multi-segment)
 ```
